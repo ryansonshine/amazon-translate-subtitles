@@ -99,4 +99,4 @@ Read Stream of the video file you would like to translate subtitles for.
 [semantic-release-url]:https://github.com/semantic-release/semantic-release
 [commitizen-img]:https://img.shields.io/badge/commitizen-friendly-brightgreen.svg
 [commitizen-url]:http://commitizen.github.io/cz-cli/
-[cli-url]:[https://github.com/ryansonshine/amazon-translate-subtitles-cli]
+[cli-url]:https://github.com/ryansonshine/amazon-translate-subtitles-cli
