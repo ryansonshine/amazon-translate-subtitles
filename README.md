@@ -51,6 +51,7 @@ Type: `object`
 ##### awsClientOverrides
 
 Type: `object`
+
 Default: `{}`
 
 Configuration options passed to the AWS SDK Translate client as overrides.
@@ -58,6 +59,7 @@ Configuration options passed to the AWS SDK Translate client as overrides.
 ##### showProgress
 
 Type: `boolean`
+
 Default: `false`
 
 Turns the progress bar on or off.
@@ -65,6 +67,7 @@ Turns the progress bar on or off.
 ##### sourceLanguage
 
 Type: `string`
+
 Default: `'en'`
 
 Source language for translating the subtitles from.
