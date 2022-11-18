@@ -33,7 +33,7 @@ describe('translate', () => {
     it('should return the expected translated subtitles with an mkv containing subs', async () => {
       const video = createReadStream(videoWithSubs);
       const expected = await promises.readFile(
-        `${doublesDirectory}/test-with-subs.th_TH.srt`
+        `${doublesDirectory}/test-with-subs.th.srt`
       );
       translateMock
         .on(TranslateTextCommand)
