@@ -240,8 +240,8 @@ export const findSourceLanguageTrack = ({
   if (!trackMatches.length && iso6391 === 'eng') {
     trackMatches = [...tracks.values()]
       .filter(
-        // English is sometimes represented as 'und' for undefined
-        track => track.language === 'und' || track.language === undefined
+        // English is sometimes represented as undefined
+        track => track.language === undefined
       )
       .sort((a, b) => a.subtitles.length - b.subtitles.length);
   }
