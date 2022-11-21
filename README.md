@@ -72,6 +72,21 @@ Default: `'en'`
 
 Source language for translating the subtitles from.
 
+##### sourceTrackType
+
+Type: `string`
+
+Default: `'auto'`
+
+Source track type to select if multiple subtitle tracks of the same language are
+available. Options are `auto`, `sdh`, and `forced`.
+
+**Auto**: The library will attempt to grab the standard subtitles.
+
+**SDH**: Subtitles designed for those who are deaf and hard of hearing.
+
+**Forced**: Displayed when the video has a secondary language being spoken.
+
 ##### targetLanguage
 
 Type: `string`

@@ -83,4 +83,6 @@ export interface Track {
   subtitles: Subtitle[];
 }
 
+export type SourceTrackType = 'sdh' | 'forced' | 'auto';
+
 export type TracksMap = Map<number, Track>;

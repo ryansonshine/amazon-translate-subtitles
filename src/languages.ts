@@ -3,7 +3,7 @@ import {
   TranslateClient,
 } from '@aws-sdk/client-translate';
 import { InvalidLanguageError, NoSubtitleTracksError } from './errors';
-import { SupportedLanguage, Track, TracksMap } from './types';
+import { SourceTrackType, SupportedLanguage, Track, TracksMap } from './types';
 
 /**
  * ISO 639-1 to ISO 639-2 map.
@@ -217,24 +217,56 @@ export const validateLanguages = async ({
   }
 };
 
-export const findSourceLanguageTrack = (
-  tracks: TracksMap,
-  sourceLanguage: SupportedLanguage
-): { sourceTrack: Track; sourceLanguage: SupportedLanguage } => {
+export interface FindSourceLanguageTrackInput {
+  tracks: TracksMap;
+  sourceLanguage: SupportedLanguage;
+  sourceTrackType?: SourceTrackType;
+}
+
+export const findSourceLanguageTrack = ({
+  sourceLanguage,
+  sourceTrackType = 'auto',
+  tracks,
+}: FindSourceLanguageTrackInput): {
+  sourceTrack: Track;
+  sourceLanguage: SupportedLanguage;
+} => {
   const iso6391 = iso6391To6392[sourceLanguage];
 
-  let sourceTrack = [...tracks.values()].find(
-    track => track.language === iso6391
-  );
+  let trackMatches = [...tracks.values()]
+    .filter(track => track.language === iso6391)
+    .sort((a, b) => a.subtitles.length - b.subtitles.length);
 
-  if (!sourceTrack && iso6391 === 'eng') {
-    sourceTrack = [...tracks.values()].find(
-      // English is sometimes represented as 'und' for undefined
-      track => track.language === 'und' || track.language === undefined
-    );
+  if (!trackMatches.length && iso6391 === 'eng') {
+    trackMatches = [...tracks.values()]
+      .filter(
+        // English is sometimes represented as 'und' for undefined
+        track => track.language === 'und' || track.language === undefined
+      )
+      .sort((a, b) => a.subtitles.length - b.subtitles.length);
   }
 
-  if (!sourceTrack) {
+  let sourceTrack: Track | undefined;
+
+  if (trackMatches.length >= 3) {
+    sourceTrack =
+      sourceTrackType === 'auto'
+        ? trackMatches[1]
+        : sourceTrackType === 'forced'
+        ? trackMatches[0]
+        : sourceTrackType === 'sdh'
+        ? trackMatches[trackMatches.length - 1]
+        : undefined;
+  } else if (trackMatches.length === 2) {
+    sourceTrack =
+      sourceTrackType === 'auto' || sourceTrackType === 'sdh'
+        ? trackMatches[1]
+        : sourceTrackType === 'forced'
+        ? trackMatches[0]
+        : undefined;
+  } else if (trackMatches.length === 1) {
+    sourceTrack = trackMatches[0];
+  } else {
     sourceTrack = tracks.get(1);
     sourceLanguage = 'auto';
   }

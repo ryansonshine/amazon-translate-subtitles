@@ -60,7 +60,10 @@ describe('languages', () => {
       tracks.set(3, englishTrack);
       tracks.set(4, germanTrack);
 
-      const sourceLanguageTrack = findSourceLanguageTrack(tracks, 'en');
+      const sourceLanguageTrack = findSourceLanguageTrack({
+        tracks,
+        sourceLanguage: 'en',
+      });
 
       expect(sourceLanguageTrack).toEqual({
         sourceTrack: englishTrack,
@@ -80,7 +83,10 @@ describe('languages', () => {
       tracks.set(2, englishUndefinedTrack);
       tracks.set(3, germanTrack);
 
-      const sourceLanguageTrack = findSourceLanguageTrack(tracks, 'en');
+      const sourceLanguageTrack = findSourceLanguageTrack({
+        tracks,
+        sourceLanguage: 'en',
+      });
 
       expect(sourceLanguageTrack).toEqual({
         sourceTrack: englishUndefinedTrack,
@@ -102,7 +108,10 @@ describe('languages', () => {
       tracks.set(3, englishTrack);
       tracks.set(4, germanTrack);
 
-      const sourceLanguageTrack = findSourceLanguageTrack(tracks, 'de');
+      const sourceLanguageTrack = findSourceLanguageTrack({
+        tracks,
+        sourceLanguage: 'de',
+      });
 
       expect(sourceLanguageTrack).toEqual({
         sourceTrack: germanTrack,
@@ -124,7 +133,10 @@ describe('languages', () => {
       tracks.set(3, englishTrack);
       tracks.set(4, germanTrack);
 
-      const sourceLanguageTrack = findSourceLanguageTrack(tracks, 'am');
+      const sourceLanguageTrack = findSourceLanguageTrack({
+        tracks,
+        sourceLanguage: 'am',
+      });
 
       expect(sourceLanguageTrack).toEqual({
         sourceTrack: frenchTrack,
@@ -132,10 +144,108 @@ describe('languages', () => {
       });
     });
 
+    it('should return the subtitle track with the least amount of subtitles if forced is specified', () => {
+      const tracks: TracksMap = new Map();
+      const sdh: Track = {
+        subtitles: [
+          { duration: 100, text: 'Hello', time: 100 },
+          { duration: 200, text: '[Bangs drum]', time: 1000 },
+          { duration: 300, text: 'How are you?', time: 2000 },
+          { duration: 300, text: '[In Spanish] I am well.', time: 2000 },
+        ],
+      };
+      const auto: Track = {
+        subtitles: [
+          { duration: 100, text: 'Hello', time: 100 },
+          { duration: 300, text: 'How are you?', time: 2000 },
+          { duration: 300, text: '[In Spanish] I am well.', time: 2000 },
+        ],
+      };
+      const forced: Track = {
+        subtitles: [{ duration: 300, text: 'I am well.', time: 2000 }],
+      };
+      tracks.set(1, sdh);
+      tracks.set(2, auto);
+      tracks.set(3, forced);
+
+      const sourceLanguageTrack = findSourceLanguageTrack({
+        tracks,
+        sourceLanguage: 'en',
+        sourceTrackType: 'forced',
+      });
+
+      expect(sourceLanguageTrack).toEqual({
+        sourceTrack: forced,
+        sourceLanguage: 'en',
+      });
+    });
+
+    it('should return the subtitle track with the median amount of subtitles with 3 language tracks available', () => {
+      const tracks: TracksMap = new Map();
+      const sdh: Track = {
+        subtitles: [
+          { duration: 100, text: 'Hello', time: 100 },
+          { duration: 200, text: '[Bangs drum]', time: 1000 },
+          { duration: 300, text: 'How are you?', time: 2000 },
+          { duration: 300, text: '[In Spanish] I am well.', time: 2000 },
+        ],
+      };
+      const auto: Track = {
+        subtitles: [
+          { duration: 100, text: 'Hello', time: 100 },
+          { duration: 300, text: 'How are you?', time: 2000 },
+          { duration: 300, text: '[In Spanish] I am well.', time: 2000 },
+        ],
+      };
+      const forced: Track = {
+        subtitles: [{ duration: 300, text: 'I am well.', time: 2000 }],
+      };
+      tracks.set(1, sdh);
+      tracks.set(2, auto);
+      tracks.set(3, forced);
+
+      const sourceLanguageTrack = findSourceLanguageTrack({
+        tracks,
+        sourceLanguage: 'en',
+      });
+
+      expect(sourceLanguageTrack).toEqual({
+        sourceTrack: auto,
+        sourceLanguage: 'en',
+      });
+    });
+
+    it('should return the subtitle track with the max amount of subtitles with 2 language tracks available', () => {
+      const tracks: TracksMap = new Map();
+      const auto: Track = {
+        subtitles: [
+          { duration: 100, text: 'Hello', time: 100 },
+          { duration: 300, text: 'How are you?', time: 2000 },
+          { duration: 300, text: '[In Spanish] I am well.', time: 2000 },
+        ],
+      };
+      const forced: Track = {
+        subtitles: [{ duration: 300, text: 'I am well.', time: 2000 }],
+      };
+      tracks.set(1, auto);
+      tracks.set(2, forced);
+
+      const sourceLanguageTrack = findSourceLanguageTrack({
+        tracks,
+        sourceLanguage: 'en',
+      });
+
+      expect(sourceLanguageTrack).toEqual({
+        sourceTrack: auto,
+        sourceLanguage: 'en',
+      });
+    });
+
     it('should throw an error when no subtitle tracks are found', () => {
       const tracks: TracksMap = new Map();
 
-      const fn = () => findSourceLanguageTrack(tracks, 'en');
+      const fn = () =>
+        findSourceLanguageTrack({ tracks, sourceLanguage: 'en' });
 
       expect(fn).toThrowError(NoSubtitleTracksError);
     });

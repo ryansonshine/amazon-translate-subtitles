@@ -1,5 +1,5 @@
 import type { ReadStream } from 'fs';
-import type { SupportedLanguage, TracksMap } from './types';
+import type { SourceTrackType, SupportedLanguage, TracksMap } from './types';
 import { SubtitleParser } from 'matroska-subtitles';
 import {
   TranslateClientConfig,
@@ -27,6 +27,13 @@ export interface TranslateSubtitlesOptions {
    */
   sourceLanguage?: SupportedLanguage;
   /**
+   * Source track type to select if multiple subtitle tracks of the same
+   * language are available.
+   *
+   * @default 'auto'
+   */
+  sourceTrackType?: SourceTrackType;
+  /**
    * Target language for translating the subtitles to.
    */
   targetLanguage: SupportedLanguage;
@@ -41,6 +48,7 @@ export const translateSubtitles = async ({
   video,
   showProgress = false,
   targetLanguage,
+  sourceTrackType = 'auto',
   sourceLanguage = 'en',
 }: TranslateSubtitlesOptions): Promise<string> => {
   await checkFileType(video);
@@ -70,7 +78,7 @@ export const translateSubtitles = async ({
   await once(parser, 'finish');
 
   const { sourceTrack, sourceLanguage: matchedSourceLanguage } =
-    findSourceLanguageTrack(tracks, sourceLanguage);
+    findSourceLanguageTrack({ tracks, sourceLanguage, sourceTrackType });
 
   if (matchedSourceLanguage !== sourceLanguage) {
     console.warn(
