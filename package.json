@@ -48,7 +48,6 @@
     "@types/progress": "^2.0.5",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
-    "aws-sdk-client-mock": "^2.0.0",
     "conventional-changelog-conventionalcommits": "^5.0.0",
     "eslint": "^7.25.0",
     "eslint-config-prettier": "^8.3.0",
@@ -120,7 +119,6 @@
     "@aws-sdk/client-translate": "^3.209.0",
     "file-type": "^16.5.4",
     "lodash.defaultsdeep": "^4.6.1",
-    "loglevel": "^1.8.1",
     "matroska-subtitles": "^3.3.2",
     "p-limit": "^3.1.0",
     "progress": "^2.0.3"
