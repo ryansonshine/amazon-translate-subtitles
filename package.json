@@ -117,7 +117,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-translate": "^3.209.0",
-    "file-type": "^16.5.4",
+    "file-type": "^21.3.1",
     "lodash.defaultsdeep": "^4.6.1",
     "matroska-subtitles": "^3.3.2",
     "p-limit": "^3.1.0",
